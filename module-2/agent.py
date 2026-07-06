@@ -45,12 +45,23 @@ def list_images() -> str:
     )
     return result.stdout or result.stderr
 
+@tool
+def restart_container(container_name: str) -> str:
+    """Restart a Docker container."""
+    result = subprocess.run(
+        ["docker", "restart", container_name],
+        capture_output=True,
+        text=True,
+    )
+    return result.stdout or result.stderr
+
 llm = ChatOllama(model="gemma4", temperature=0)
 tools = [
     list_containers,
     get_logs,
     inspect_container,
     list_images,
+    restart_container,
 ]
 agent = create_react_agent(llm, tools)
 
