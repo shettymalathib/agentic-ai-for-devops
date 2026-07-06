@@ -35,9 +35,23 @@ def inspect_container(container_name: str) -> str:
     )
     return result.stdout or result.stderr
 
+@tool
+def list_images() -> str:
+    """List all Docker images on this machine with their sizes."""
+    result = subprocess.run(
+        ["docker", "images"],
+        capture_output=True,
+        text=True,
+    )
+    return result.stdout or result.stderr
 
 llm = ChatOllama(model="gemma4", temperature=0)
-tools = [list_containers, get_logs, inspect_container]
+tools = [
+    list_containers,
+    get_logs,
+    inspect_container,
+    list_images,
+]
 agent = create_react_agent(llm, tools)
 
 print("\nDocker Troubleshooter Agent")
