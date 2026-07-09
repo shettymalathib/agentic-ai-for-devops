@@ -69,12 +69,38 @@ def get_events(namespace: str = "default") -> str:
     )
     return result.stdout or result.stderr
 
+@tool
+def search_logs(keyword: str, namespace: str = "default") -> str:
+    """Search for a keyword in the logs of all pods in a namespace."""
+
+    pods = subprocess.run(
+        ["kubectl", "get", "pods", "-n", namespace, "-o", "name"],
+        capture_output=True,
+        text=True,
+    )
+
+    results = []
+
+    for pod in pods.stdout.strip().split("\n"):
+        if not pod:
+            continue
+
+        logs = subprocess.run(
+            ["kubectl", "logs", pod, "-n", namespace, "--tail=100"],
+            capture_output=True,
+            text=True,
+        )
+
+        if keyword.lower() in logs.stdout.lower():
+            results.append(f"{pod}: found '{keyword}'")
+
+    return "\n".join(results) if results else f"No pods contain '{keyword}' in their logs"
 
 #llm = ChatOllama(model="gemma4", temperature=0)
 llm = ChatOllama(model="qwen2.5:3b", temperature=0)
 tools = [
     list_containers, get_logs, inspect_container,
-    list_pods, describe_pod, get_events,
+    list_pods, describe_pod, get_events, search_logs,
 ]
 agent = create_react_agent(llm, tools)
 

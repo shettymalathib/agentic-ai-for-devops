@@ -20,7 +20,8 @@ async def main():
 
     # 2. Initialize the LLM
     llm = ChatOllama(
-        model="gemma4", 
+        #model="gemma4", 
+        model="qwen2.5:3b",
         temperature=0.8
     )
 

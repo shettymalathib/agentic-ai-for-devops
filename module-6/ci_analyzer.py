@@ -44,7 +44,8 @@ def get_workflow_file(workflow_name: str) -> str:
     return f"File not found: {path}"
 
 
-llm = ChatOllama(model="gemma4", temperature=0)
+#llm = ChatOllama(model="gemma4", temperature=0)
+llm = ChatOllama(model="qwen2.5:3b", temperature=0)
 tools = [list_workflow_runs, get_failed_logs, get_workflow_file]
 agent = create_react_agent(llm, tools)
 
