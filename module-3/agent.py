@@ -86,7 +86,7 @@ def search_logs(keyword: str, namespace: str = "default") -> str:
             continue
 
         logs = subprocess.run(
-            ["kubectl", "logs", pod, "-n", namespace, "--tail=100"],
+            ["kubectl", "logs", pod, "-n", namespace, "--tail=100",  "--previous",],
             capture_output=True,
             text=True,
         )
